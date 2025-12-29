@@ -1,0 +1,79 @@
+---
+title: "Spark Streaming Scoring Monitor (Local)"
+format: html
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## What this shows
+
+This report reads the Parquet output produced by Spark Structured Streaming (`stream_out/`) and summarizes the live scoring results.
+
+> Note: This is a local, file-based streaming source (JSON files dropped into `stream_in/`), which is a common pattern for testing and demos.
+
+## Load latest scored data
+
+```{r}
+library(arrow)
+library(dplyr)
+library(ggplot2)
+
+out_dir <- "../stream_out"
+
+ds <- open_dataset(out_dir, format = "parquet")
+
+df <- ds %>%
+  select(age, sex, drinks, drugs, essay_length, prediction) %>%
+  collect()
+
+nrow(df)
+```
+## Summary
+
+```{r}
+df %>%
+summarise(
+rows_scored = n(),
+pct_predicted_not_working = 100 * mean(as.numeric(prediction), na.rm = TRUE),
+avg_age = mean(age, na.rm = TRUE),
+avg_essay_length = mean(essay_length, na.rm = TRUE)
+)
+```
+
+## Prediction distribution
+
+```{r}
+ggplot(df, aes(x = factor(prediction))) +
+geom_bar() +
+labs(x = "Prediction (0 = working, 1 = not_working)", y = "Count")
+```
+## Prediction by category (examples)
+```{r}
+df %>%
+mutate(prediction = factor(prediction)) %>%
+count(drinks, prediction) %>%
+group_by(drinks) %>%
+mutate(pct = 100 * n / sum(n)) %>%
+ungroup() %>%
+arrange(desc(pct)) %>%
+head(20)
+```
+```{r}
+df %>%
+mutate(prediction = factor(prediction)) %>%
+count(drugs, prediction) %>%
+group_by(drugs) %>%
+mutate(pct = 100 * n / sum(n)) %>%
+ungroup() %>%
+arrange(desc(pct)) %>%
+head(20)
+```
+## Latest rows
+```{r}
+df %>%
+select(age, sex, drinks, drugs, essay_length, prediction) %>%
+tail(20)
+```
+

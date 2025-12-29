@@ -1,0 +1,24 @@
+# R session junk
+.RData
+.Rhistory
+.Rproj.user/
+
+# Spark
+logs/
+derby.log
+
+# Generated data
+data/
+stream_in/
+stream_out/
+checkpoint/
+_spark_metadata/
+*_spark_metadata/
+
+
+# models/
+
+# OS
+.DS_Store
+Thumbs.db
+
