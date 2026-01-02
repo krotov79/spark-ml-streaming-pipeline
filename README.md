@@ -51,9 +51,8 @@ report/
 ```{r}
    source("scripts/05_stream_scoring.R")
 ```
-“Keep this running (it listens for new events).”
-
-“Run Step 3 in a new R session / separate terminal.”
+- Keep this running (it listens for new events).
+- Run Step 3 in a new R session / separate terminal.
 
 3. Generate sample streaming events:
 
