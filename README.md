@@ -30,19 +30,54 @@ report/
   stream_scoring.qmd
   stream_scoring.html
   
-## How to Run
+## How to Run Locally
 
-1. Run batch training:
-   - `scripts/01_load_and_clean.R`
-   - `scripts/02_features.R`
-   - `scripts/03_train_pipeline.R`
+### Prerequisites
+- Java 8+ (for Spark)
+- Apache Spark (local mode)
+- RStudio or R console(>= 4.2)
+- R packages: sparklyr, dplyr, arrow, ggplot2, quarto
 
-2. Start streaming:
-   - Run `scripts/05_stream_scoring.R`
-   - Generate events with `scripts/04_event_producer.R`
+### Steps
 
-3. Open the report:
-   - `report/stream_scoring.html`
+1. Start a local Spark session and train the model:
+
+```{r}
+   source("scripts/03_train_pipeline.R")
+```
+
+2. Start the streaming scorer:
+
+```{r}
+   source("scripts/05_stream_scoring.R")
+```
+
+3. Generate sample streaming events:
+
+```{r}
+   source("scripts/04_event_producer.R")
+```
+
+4. Open the monitoring report:
+report/stream_scoring.html
+
+## Pipeline Flow
+```md
+Batch data
+   ↓
+Feature engineering
+   ↓
+Spark ML Pipeline (Logistic Regression)
+   ↓
+Saved model
+   ↓
+Structured Streaming
+   ↓
+Live scoring (JSON → Parquet)
+   ↓
+Quarto HTML report
+```
+
 
 ## Notes
 
