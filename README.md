@@ -33,8 +33,8 @@ report/
 ## How to Run Locally
 
 ### Prerequisites
-- Java 8+ (for Spark)
-- Apache Spark (local mode)
+- Java 11+ recommended (for Spark 3.x)
+- Apache Spark (local mode, Spark comes via sparklyr::spark_install())
 - RStudio or R console(>= 4.2)
 - R packages: sparklyr, dplyr, arrow, ggplot2, quarto
 
@@ -51,12 +51,18 @@ report/
 ```{r}
    source("scripts/05_stream_scoring.R")
 ```
+“Keep this running (it listens for new events).”
+
+“Run Step 3 in a new R session / separate terminal.”
 
 3. Generate sample streaming events:
 
 ```{r}
    source("scripts/04_event_producer.R")
 ```
+
+- Predictions land in stream_out/ (parquet)
+- Incoming events are written to stream_in/ (json)
 
 4. Open the monitoring report:
 report/stream_scoring.html
@@ -83,3 +89,4 @@ Quarto HTML report
 
 - Streaming source is file-based (JSON drop-in) for local testing
 - This project is designed as a portfolio/demo pipeline, not production infrastructure
+
